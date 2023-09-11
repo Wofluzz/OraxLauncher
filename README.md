@@ -1,5 +1,5 @@
 # OraxLauncher
-
+![NewOraxBanner for 130px x 500px (1)](https://github.com/Wofluzz/OraxLauncher/assets/96381337/7f48f06a-457f-410c-abfe-3841c088de58)
 OraxLauncher est un lanceur Minecraft personnalisé qui tire parti de l'API AlternativeAPI pour offrir une expérience fluide aux joueurs souhaitant accéder à des mods et se connecter au serveur OraxFun. OraxFun est un serveur PvP factions moddé avec une histoire en constante évolution qui se développera au fil des années.
 
 ## Qu'est-ce qu'OraxLauncher ?
