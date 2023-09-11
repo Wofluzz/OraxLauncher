@@ -30,7 +30,7 @@ OraxLauncher a été créé dans le but de simplifier le processus permettant au
 
 ## Contact et Support :
 
-Si vous avez des questions, rencontrez des problèmes ou souhaitez fournir des commentaires, n'hésitez pas à contacter notre équipe de support à l'adresse suivante : [support@oraxlauncher.com](mailto:support@oraxlauncher.com).
+Si vous avez des questions, rencontrez des problèmes ou souhaitez fournir des commentaires, n'hésitez pas à contacter notre équipe de support à l'adresse suivante : [support@oraxlauncher.com](mailto:oraxfun@gmail.com).
 
 ## Contributions :
 
