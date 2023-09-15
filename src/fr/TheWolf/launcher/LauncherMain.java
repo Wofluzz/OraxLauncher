@@ -21,16 +21,19 @@ import javafx.stage.StageStyle;
 public class LauncherMain extends AlternativeBase {
 	public static GameFolder gameFolder = new GameFolder("ØraxFunlauncher");
 	private LauncherPreferences launcherPreferences = new LauncherPreferences("ØraxFun Launcher", 950, 600, Mover.MOVE);
-	private GameLinks gameLinks = new GameLinks("https://oraxfungames.000webhostapp.com/libs/OraxLauncherlibs/","1.12.2.json"); // 1.12.2-forge-14.23.5.2859.json
+	private GameLinks gameLinks = new GameLinks("https://oraxfungames.000webhostapp.com/libs/OraxLauncherlibs/","1.12.2-forge-14.23.5.2859.json"); // 1.12.2-forge-14.23.5.2859.json
     private GameEngine gameEngine = new GameEngine(gameFolder, gameLinks, launcherPreferences); 		
     private GameConnect gameConnect = new GameConnect("oraxfun.falix.gg","27884");
-
+    
+    
     @Override
 	public void start(Stage primaryStage) throws Exception {
 		Scene scene = new Scene(createContent());
 		LauncherBase launcherBase = new LauncherBase(primaryStage, scene, StageStyle.TRANSPARENT, this.gameEngine);
 		launcherBase.setIconImage(primaryStage, "neworaxlogo.png");
 	}
+    
+    
 
 	private Parent createContent() {
 		LauncherPane contentPane = new LauncherPane(this.gameEngine, 5, WindowStyle.TRANSPARENT);
