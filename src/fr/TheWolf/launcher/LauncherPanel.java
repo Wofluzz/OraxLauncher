@@ -180,10 +180,9 @@ public class LauncherPanel extends IScreen {
 		this.setFontSize(12.5F);
 		this.settingsButton.setFont(this.customFont);
 		this.settingsButton.setBounds(this.gameEngine.getWidth() - 130, this.gameEngine.getHeight() - 99, 105, 20);
-		this.settingsButton.addStyle("-fx-background-color: rgb(230, 230, 230);");
-		this.settingsButton.addStyle("-fx-text-fill: black;");
-		this.settingsButton.addStyle("-fx-border-radius: 0 0 0 0;");
-		this.settingsButton.addStyle("-fx-background-radius: 0 0 0 0;");
+		LauncherImage settingsImage = new LauncherImage(root, loadImage(gameEngine, "close.png"));
+		settingsImage.setSize(40, 20);
+		this.closeButton.setGraphic(closeImage);
 		this.settingsButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
