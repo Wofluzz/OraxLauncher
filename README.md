@@ -19,7 +19,7 @@ OraxLauncher a été créé dans le but de simplifier le processus permettant au
 
 ## Pour Commencer :
 
-1. Téléchargez OraxLauncher depuis le [site officiel](v0.0.0).
+1. Téléchargez OraxLauncher depuis le [site officiel](https://github.com/Wofluzz/OraxLauncher/releases/tag/v0.0.0).
 
 2. Installez OraxLauncher sur votre ordinateur.
 
