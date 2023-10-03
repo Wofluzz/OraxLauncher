@@ -36,7 +36,7 @@ ou en passant par notre discord : [https://discord.gg/oraxfun](https://discord.g
 
 ## Contributions :
 
-Nous accueillons favorablement les contributions de la communauté pour améliorer OraxLauncher. Si vous avez des idées d'améliorations ou souhaitez signaler un bogue, veuillez ouvrir une issue sur notre [dépôt GitHub](https://github.com/Wofluzz/OraxLauncher).
+Nous accueillons favorablement les contributions de la communauté pour améliorer OraxLauncher. Si vous avez des idées d'améliorations ou souhaitez signaler un bug, veuillez ouvrir une issue sur notre [dépôt GitHub](https://github.com/Wofluzz/OraxLauncher).
 
 ## Licence :
 
