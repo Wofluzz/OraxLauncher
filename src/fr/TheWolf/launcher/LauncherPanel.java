@@ -6,21 +6,18 @@ import java.util.UUID;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherAlert;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherButton;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherImage;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherLabel;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherPasswordField;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherProgressBar;
-import fr.trxyy.alternative.alternative_api_uiv2.components.LauncherTextField;
-import fr.trxyy.alternative.alternative_apiv2.base.GameEngine;
-import fr.trxyy.alternative.alternative_apiv2.base.IScreen;
-import fr.trxyy.alternative.alternative_apiv2.settings.UsernameSaver;
-import fr.trxyy.alternative.alternative_apiv2.updater.GameUpdater;
-import fr.trxyy.alternative.alternative_apiv2.utils.FontLoader;
-import fr.trxyy.alternative.alternative_apiv2.utils.Mover;
-import fr.trxyy.alternative.alternative_authv2.base.GameAuth;
-import fr.trxyy.alternative.alternative_authv2.base.Session;
+import fr.trxyy.alternative.alternative_api.GameEngine;
+import fr.trxyy.alternative.alternative_api.updater.GameUpdater;
+import fr.trxyy.alternative.alternative_api.utils.FontLoader;
+import fr.trxyy.alternative.alternative_api.utils.Mover;
+import fr.trxyy.alternative.alternative_api_ui.LauncherAlert;
+import fr.trxyy.alternative.alternative_api_ui.base.IScreen;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherButton;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherImage;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherLabel;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherPasswordField;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherProgressBar;
+import fr.trxyy.alternative.alternative_api_ui.components.LauncherTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -46,7 +43,7 @@ public class LauncherPanel extends IScreen {
 	private LauncherPasswordField passwordField;
 	private LauncherButton loginButton, settingsButton, microsoftButton;
 	/** USERNAME SAVER, CONFIG SAVER */
-	public UsernameSaver usernameSaver;
+//	public UsernameSaver usernameSaver;
 	/** GAMEENGINE REQUIRED */
 	private GameEngine gameEngine;
 	private LauncherProgressBar progressBar;
