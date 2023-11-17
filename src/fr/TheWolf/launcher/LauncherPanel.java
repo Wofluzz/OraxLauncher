@@ -1,16 +1,24 @@
 package fr.TheWolf.launcher;
 
 import java.io.File;
-import java.util.UUID;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import com.jfoenix.controls.JFXProgressBar;
+
+import animatefx.animation.ZoomOutDown;
 import fr.trxyy.alternative.alternative_api.GameEngine;
+import fr.trxyy.alternative.alternative_api.GameMemory;
+import fr.trxyy.alternative.alternative_api.GameSize;
+import fr.trxyy.alternative.alternative_api.JVMArguments;
 import fr.trxyy.alternative.alternative_api.updater.GameUpdater;
 import fr.trxyy.alternative.alternative_api.utils.FontLoader;
 import fr.trxyy.alternative.alternative_api.utils.Mover;
+import fr.trxyy.alternative.alternative_api.utils.config.EnumConfig;
+import fr.trxyy.alternative.alternative_api.utils.config.LauncherConfig;
 import fr.trxyy.alternative.alternative_api_ui.LauncherAlert;
+import fr.trxyy.alternative.alternative_api_ui.LauncherPane;
 import fr.trxyy.alternative.alternative_api_ui.base.IScreen;
 import fr.trxyy.alternative.alternative_api_ui.components.LauncherButton;
 import fr.trxyy.alternative.alternative_api_ui.components.LauncherImage;
@@ -18,23 +26,33 @@ import fr.trxyy.alternative.alternative_api_ui.components.LauncherLabel;
 import fr.trxyy.alternative.alternative_api_ui.components.LauncherPasswordField;
 import fr.trxyy.alternative.alternative_api_ui.components.LauncherProgressBar;
 import fr.trxyy.alternative.alternative_api_ui.components.LauncherTextField;
+import fr.trxyy.alternative.alternative_auth.account.AccountType;
+import fr.trxyy.alternative.alternative_auth.base.GameAuth;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
 
 public class LauncherPanel extends IScreen {
+
+	private final LauncherPane panel = LauncherMain.getContentPane();
+	private static LauncherPanel instance;
+
+	public LauncherConfig config;
+	// Auth de Microsoft
+	private GameAuth gameAuthentication;
+
 	/** TOP */
 	private LauncherButton closeButton;
 	private LauncherButton reduceButton;
@@ -42,8 +60,7 @@ public class LauncherPanel extends IScreen {
 	private LauncherTextField usernameField;
 	private LauncherPasswordField passwordField;
 	private LauncherButton loginButton, settingsButton, microsoftButton;
-	/** USERNAME SAVER, CONFIG SAVER */
-//	public UsernameSaver usernameSaver;
+	private final GameUpdater gameUpdater = new GameUpdater();
 	/** GAMEENGINE REQUIRED */
 	private GameEngine gameEngine;
 	private LauncherProgressBar progressBar;
@@ -60,16 +77,25 @@ public class LauncherPanel extends IScreen {
 	private LauncherImage headImage;
 	private LauncherLabel accountLabel, newsTitle, newsSubtitle;
 	/** SETTINGS **/
-	private GameAuth gameAuth;
-	private Session gameSession;
+	// private LauncherButton saveButton;
+	private LauncherLabel memorySliderLabel;
+	private Slider memorySlider;
+	private LauncherLabel windowSizeLabel;
+	private ComboBox<String> windowsSizeList;
+	private CheckBox autoLogin;
+	public JFXProgressBar bar;
 	private Font customFont = FontLoader.loadFont("Roboto-Light.ttf", "Roboto Light", 18F);
 
 	/** PLUS **/
 	private Rectangle news;
 
 	public LauncherPanel(Pane root, GameEngine engine) {
+		instance = this;
 		this.gameEngine = engine;
-		this.usernameSaver = new UsernameSaver(engine);
+		//this.usernameSaver = new UsernameSaver(engine);
+		
+		this.config = new LauncherConfig(engine);
+        this.config.loadConfiguration();
 
 		this.drawRect(root, 0, 0, gameEngine.getWidth(), gameEngine.getHeight(), Color.rgb(255, 255, 255, 0.10));
 		/** ===================== RECTANGLE NOIR A GAUCHE ===================== */
@@ -97,7 +123,8 @@ public class LauncherPanel extends IScreen {
 		this.newsSubtitle.setSize(500, 40);
 		this.newsSubtitle.setVisible(true);
 		/** ===================== AFFICHER UN LOGO ===================== */
-		this.drawImage(gameEngine, loadImage(gameEngine, "neworaxlogo.png"), 2, this.gameEngine.getHeight() - 75, 75, 75, root, Mover.DONT_MOVE);
+		this.drawImage(engine, loadImage(gameEngine, "neworaxlogo.png"),
+                engine.getWidth() / 2 - 70, 40, 150, 150, root, Mover.DONT_MOVE);
 		/** ===================== BOUTON FERMER ===================== */
 		this.closeButton = new LauncherButton(root);
 		this.closeButton.setInvisible();
@@ -118,14 +145,16 @@ public class LauncherPanel extends IScreen {
 		LauncherImage reduceImage = new LauncherImage(root, loadImage(gameEngine, "minimize.png"));
 		reduceImage.setSize(40, 20);
 		this.reduceButton.setGraphic(reduceImage);
-		this.reduceButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Stage stage = (Stage) ((LauncherButton) event.getSource()).getScene().getWindow();
-				stage.setIconified(true);
-			}
-		});
+		reduceButton.setOnAction(event -> {
+            final ZoomOutDown animation2 = new ZoomOutDown(panel);
+            animation2.setOnFinished(actionEvent -> {
+                Stage stage = (Stage) ((LauncherButton) event.getSource()).getScene().getWindow();
+                stage.setIconified(true);
+            });
+            animation2.setResetOnFinished(true);
+            animation2.play();
 		/** ===================== CASE PSEUDONYME ===================== */
-		this.usernameField = new LauncherTextField(usernameSaver.getUsername(), root);
+		//this.usernameField = new LauncherTextField(usernameSaver.getUsername(), root);
 		this.usernameField.setBounds(this.gameEngine.getWidth() - 360, this.gameEngine.getHeight() - 99, 220, 20);
 		this.setFontSize(14.0F);
 		this.usernameField.setFont(this.customFont);
@@ -153,25 +182,28 @@ public class LauncherPanel extends IScreen {
 		this.loginButton.addStyle("-fx-text-fill: black;");
 		this.loginButton.addStyle("-fx-border-radius: 0 0 0 0;");
 		this.loginButton.addStyle("-fx-background-radius: 0 0 0 0;");
-		this.loginButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-				usernameSaver.saveSettings(usernameField.getText());
+		this.loginButton.setOnAction(event -> {
+            if (LauncherMain.netIsAvailable()) {
 				/**
 				 * ===================== AUTHENTIFICATION OFFLINE (CRACK) =====================
 				 */
-				if (usernameField.getText().length() < 3) {
-					new LauncherAlert("Authentification echouee",
-							"Il y a un probleme lors de la tentative de connexion: Le pseudonyme doit comprendre au moins 3 caracteres.");
-				} else if (usernameField.getText().length() > 3 && passwordField.getText().isEmpty()) {
-					gameSession = new Session(usernameField.getText(), UUID.randomUUID().toString(),
-							UUID.randomUUID().toString());
-					File jsonFile = downloadVersion(engine.getGameLinks().getJsonUrl(), engine);
-					updateGame(gameSession, jsonFile);
-
-				}
-			}
-		});
+            	if (usernameField.getText().length() < 3) {
+                    new LauncherAlert("Authentification echouee",
+                            "Il y a un probleme lors de la tentative de connexion: Le pseudonyme doit comprendre au moins 3 caracteres.");
+                } else if (usernameField.getText().length() > 3) {
+                    gameAuthentication = new GameAuth(usernameField.getText(), passwordField.getText(),
+                            AccountType.OFFLINE);
+                    if (gameAuthentication.isLogged()) {
+//                        if ((boolean) config.getValue(EnumConfig.USE_FORGE) && verif == 1) {
+//                            update(gameAuthentication);
+//                        } else {
+                            updateGame(gameAuthentication);
+//                        }
+                    }
+                    connectAccountCrackCO(root);
+                }
+            }
+            });
 		/** ===================== BOUTON DES OPTIONS ===================== */
 		this.settingsButton = new LauncherButton("Options", root);
 		this.setFontSize(12.5F);
@@ -295,81 +327,115 @@ public class LauncherPanel extends IScreen {
 
 	}
 
-	private void updateGame(Session auth, File jsonFile) {
-		this.accountLabel.setText(auth.getUsername());
+	private void updateGame(GameAuth auth) {
+		// this.accountLabel.setText(auth.Ge());
 		this.fadeOut(this.loginButton, 300).setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				newsTitle.setVisible(false);
 				newsSubtitle.setVisible(false);
 				news.setVisible(false);
-				
+
 				loginButton.setVisible(false);
 				updateLabel.setVisible(true);
 				fadeIn(updateLabel, 300);
-				
+
 				progressBar.setVisible(true);
 				fadeIn(progressBar, 300);
-				
+
 				loggedRectangle.setVisible(true);
 				fadeIn(loggedRectangle, 300);
-				
+
 				headImage.setImage(new Image("https://minotar.net/helm/" + auth.getUsername() + "/120.png"));
 				headImage.setVisible(true);
 				fadeIn(headImage, 300);
-				
+
 				updateRectangle.setVisible(true);
 				fadeIn(updateRectangle, 300);
-				
+
 				loggedRectangle.setVisible(true);
 				fadeIn(loggedRectangle, 300);
-				
+
 				accountLabel.setVisible(true);
 				fadeIn(accountLabel, 300);
 			}
 		});
 		this.fadeOut(this.usernameField, 300).setOnFinished(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	usernameField.setVisible(false);
-		    }
+			@Override
+			public void handle(ActionEvent event) {
+				usernameField.setVisible(false);
+			}
 		});
 		this.fadeOut(this.passwordField, 300).setOnFinished(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	passwordField.setVisible(false);
-		    }
+			@Override
+			public void handle(ActionEvent event) {
+				passwordField.setVisible(false);
+			}
 		});
 		this.fadeOut(this.settingsButton, 300).setOnFinished(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	settingsButton.setVisible(false);
-		    }
+			@Override
+			public void handle(ActionEvent event) {
+				settingsButton.setVisible(false);
+			}
 		});
 		this.fadeOut(this.microsoftButton, 300).setOnFinished(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	microsoftButton.setVisible(false);
-		    }
-		});
-		
-		this.updateThread = new Thread() {
-			public void run() {
-				updater = new GameUpdater(prepareGameUpdate(updater, gameEngine, auth, jsonFile), gameEngine);
-				gameEngine.reg(updater);
-				Timeline t = new Timeline( new KeyFrame[] { new KeyFrame(Duration.seconds(0.0D), new EventHandler<ActionEvent>() {
-							public void handle(ActionEvent event) {
-								double percent = (gameEngine.getGameUpdater().downloadedFiles * 100.0D / gameEngine.getGameUpdater().filesToDownload / 100.0D);
-								progressBar.setProgress(percent);
-								updateLabel.setText(gameEngine.getGameUpdater().getUpdateText());
-							}
-						}, new KeyValue[0]), new KeyFrame(Duration.seconds(0.1D), new KeyValue[0]) });
-				t.setCycleCount(Animation.INDEFINITE);
-				t.play();
-				downloadGameAndRun(updater, auth);
+			@Override
+			public void handle(ActionEvent event) {
+				microsoftButton.setVisible(false);
 			}
-		};
-		this.updateThread.start();
+		});
+
+		this.gameEngine.reg(LauncherMain.gameLinks);
+		this.gameEngine.getGameLinks().JSON_URL = this.gameEngine.getGameLinks().BASE_URL
+				+ this.config.getValue(EnumConfig.VERSION) + ".json";
+		this.gameUpdater.reg(this.gameEngine);
+		this.gameUpdater.reg(auth.getSession());
+
+		/*
+		 * Change settings in GameEngine from launcher_config.json
+		 */
+		this.gameEngine.reg(GameMemory.getMemory(Double.parseDouble((String) this.config.getValue(EnumConfig.RAM))));
+		this.gameEngine
+				.reg(GameSize.getWindowSize(Integer.parseInt((String) this.config.getValue(EnumConfig.GAME_SIZE))));
+		boolean useVmArgs = (Boolean) config.getValue(EnumConfig.USE_VM_ARGUMENTS);
+		String vmArgs = (String) config.getValue(EnumConfig.VM_ARGUMENTS);
+		String[] s = null;
+		if (useVmArgs) {
+			if (vmArgs.length() > 3) {
+				s = vmArgs.split(" ");
+			}
+			assert s != null;
+			JVMArguments arguments = new JVMArguments(s);
+			this.gameEngine.reg(arguments);
+		}
+		this.gameEngine.reg(this.gameUpdater);
+
+		Thread updateThread = new Thread(() -> this.gameEngine.getGameUpdater().start());
+		updateThread.start();
+
+		/*
+		 * ===================== REFAICHIR LE NOM DU FICHIER, PROGRESSBAR, POURCENTAGE
+		 * =====================
+		 **/
+		Timeline timeline = new Timeline(
+				new KeyFrame(javafx.util.Duration.seconds(0.0D), event -> timelineUpdate2(this.gameEngine)),
+				new KeyFrame(javafx.util.Duration.seconds(0.1D)));
+
+		timeline.setCycleCount(Animation.INDEFINITE);
+		timeline.play();
+
+	}
+
+	public void timelineUpdate2(GameEngine engine) {
+		if (engine.getGameUpdater().downloadedFiles > 0) {
+			this.percentageLabel.setText(decimalFormat.format(
+					engine.getGameUpdater().downloadedFiles * 100.0D / engine.getGameUpdater().filesToDownload) + "%");
+		}
+		this.currentFileLabel.setText(engine.getGameUpdater().getCurrentFile());
+		this.currentStep.setText(engine.getGameUpdater().getCurrentInfo());
+		double percent = (engine.getGameUpdater().downloadedFiles * 100.0D / engine.getGameUpdater().filesToDownload
+				/ 100.0D);
+		this.bar.setProgress(percent);
 	}
 
 	private void setFontSize(float size) {

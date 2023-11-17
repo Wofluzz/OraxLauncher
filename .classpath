@@ -9,6 +9,9 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/AlternativeAPI.jar"/>
+	<classpathentry kind="lib" path="lib/AlternativeAPI (1).jar"/>
+	<classpathentry kind="lib" path="lib/AlternativeAuth.jar"/>
+	<classpathentry kind="lib" path="lib/jfoenix-8.0.10.jar"/>
+	<classpathentry kind="lib" path="lib/animateFX-1.2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
